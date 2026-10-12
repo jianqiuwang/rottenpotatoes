@@ -3,7 +3,11 @@ class MoviesController < ApplicationController
   before_action :set_movie, only: [:show, :edit, :update, :destroy]
 
   def index
-    @movies = Movie.all
+    allowed_columns = %w[title rating release_date]
+    @sort = allowed_columns.include?(params[:sort]) ? params[:sort] : 'title'
+    @direction = %w[asc desc].include?(params[:direction]) ? params[:direction] : 'asc'
+    
+    @movies = Movie.order(@sort => @direction)
   end
 
   def show
