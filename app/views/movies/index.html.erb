@@ -4,24 +4,34 @@
 <table>
   <thead>
     <tr>
-      <th>
-        <%= link_to "Title", movies_path(sort: "title", direction: @sort == "title" && @direction == "asc" ? "desc" : "asc") %>
-      </th>
-      <th>
-        <%= link_to "Rating", movies_path(sort: "rating", direction: @sort == "rating" && @direction == "asc" ? "desc" : "asc") %>
-      </th>
-      <th>
-        <%= link_to "Release Date", movies_path(sort: "release_date", direction: @sort == "release_date" && @direction == "asc" ? "desc" : "asc") %>
-      </th>
+      <% [["Title", "title"], ["Rating", "rating"], ["Release Date", "release_date"]].each do |label, column| %>
+        <% active = @sort == column %>
+        <% next_direction = active && @direction == "asc" ? "desc" : "asc" %>
+
+        <th class="<%= 'sorted-column' if active %>">
+          <%= link_to movies_path(sort: column, direction: next_direction) do %>
+            <%= label %>
+            <% if active %>
+              <%= @direction == "asc" ? "↑" : "↓" %>
+            <% end %>
+          <% end %>
+        </th>
+      <% end %>
     </tr>
   </thead>
 
   <tbody>
     <% @movies.each do |movie| %>
       <tr>
-        <td><%= link_to movie.title, movie_path(movie) %></td>
-        <td><%= movie.rating %></td>
-        <td><%= movie.release_date&.strftime("%Y-%m-%d") %></td>
+        <td>
+          <%= link_to movie.title, movie_path(movie) %>
+        </td>
+        <td>
+          <%= movie.rating %>
+        </td>
+        <td>
+          <%= movie.release_date&.strftime("%Y-%m-%d") %>
+        </td>
       </tr>
     <% end %>
   </tbody>
